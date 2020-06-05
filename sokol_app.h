@@ -1322,7 +1322,7 @@ _SOKOL_PRIVATE void _sapp_frame(void) {
 @end
 
 // Need a custom NSWindow interface to handle events in borderless windows.
-@implementation MyWindow
+@implementation SokolWindow
 - (BOOL)canBecomeKeyWindow { return YES; }
 @end
 
@@ -1533,7 +1533,7 @@ _SOKOL_PRIVATE void _sapp_macos_toggle_fullscreen(void) {
         NSWindowStyleMaskMiniaturizable |
         NSWindowStyleMaskResizable;
     NSRect window_rect = NSMakeRect(0, 0, _sapp.window_width, _sapp.window_height);
-    _sapp_macos_window_obj = [[NSWindow alloc]
+    _sapp_macos_window_obj = [[SokolWindow alloc]
         initWithContentRect:window_rect
         styleMask:style
         backing:NSBackingStoreBuffered
