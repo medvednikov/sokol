@@ -1317,7 +1317,16 @@ _SOKOL_PRIVATE void _sapp_frame(void) {
 @end
 #endif
 
-static NSWindow* _sapp_macos_window_obj;
+@interface SokolWindow : NSWindow {
+}
+@end
+
+// Need a custom NSWindow interface to handle events in borderless windows.
+@implementation MyWindow
+- (BOOL)canBecomeKeyWindow { return YES; }
+@end
+
+static SokolWindow* _sapp_macos_window_obj;
 static _sapp_macos_window_delegate* _sapp_macos_win_dlg_obj;
 static _sapp_macos_app_delegate* _sapp_macos_app_dlg_obj;
 static _sapp_macos_view* _sapp_view_obj;
@@ -1518,7 +1527,7 @@ _SOKOL_PRIVATE void _sapp_macos_toggle_fullscreen(void) {
         }
         _sapp.dpi_scale = (float)_sapp.framebuffer_width / (float) _sapp.window_width;
     }
-    const NSUInteger style =
+    const NSUInteger style = _sapp.desc.fullscreen ? NSWindowStyleMaskBorderless :
         NSWindowStyleMaskTitled |
         NSWindowStyleMaskClosable |
         NSWindowStyleMaskMiniaturizable |
@@ -1597,13 +1606,7 @@ _SOKOL_PRIVATE void _sapp_macos_toggle_fullscreen(void) {
         [[NSRunLoop currentRunLoop] addTimer:_sapp_macos_timer_obj forMode:NSDefaultRunLoopMode];
     #endif
     _sapp.valid = true;
-    if (_sapp.fullscreen) {
-        /* on GL, this already toggles a rendered frame, so set the valid flag before */
-        [_sapp_macos_window_obj toggleFullScreen:self];
-    }
-    else {
-        [_sapp_macos_window_obj center];
-    }
+    [_sapp_macos_window_obj center];
     [_sapp_macos_window_obj makeKeyAndOrderFront:nil];
 }
 
